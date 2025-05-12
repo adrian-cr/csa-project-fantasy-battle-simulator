@@ -28,3 +28,11 @@ gradle-app.setting
 
 # Cache of project
 .gradletasknamecache
+/FantasyBattleSimulator/.gradle/
+/FantasyBattleSimulator/build/
+/FantasyBattleSimulator/gradle/
+build.gradle.kts
+gradlew
+gradlew.bat
+settings.gradle.kts
+FantasyBattleSimulator.iml
