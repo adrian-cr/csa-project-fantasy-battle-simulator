@@ -48,6 +48,6 @@ public class BattleManager {
         throw new InvalidActionException("Invalid action: " + action);
     }//switch
     System.out.println(actor.getStatus());
-    System.out.println(target.getStatus());
+    if (target!=null) System.out.println(target.getStatus());
   }//performAction()
 }//BattleManager

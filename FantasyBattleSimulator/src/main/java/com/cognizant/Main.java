@@ -31,17 +31,23 @@ public class Main {
         Scanner sc = new Scanner(System.in);
         System.out.println("Who do you want to attack?");
         for (int i = 0; i < players.size(); i++) {
-          System.out.println((i + 1) + ". " + players.get(i));
+            System.out.println((i + 1) + ". " + players.get(i).name + (players.get(i).name.equals(actor.name)? " (you)" : ""));
         }//for
         int option = sc.nextInt() - 1;
-        if (option<1 || option>players.size() || players.get(option).equals(actor)) {
-          throw new IllegalArgumentException("Please enter a valid choice.");
+        if (option<0 || option>players.size()-1) {
+          throw new IllegalArgumentException("\nPlease enter a valid choice.\n");
+        }//if
+        if (option==players.indexOf(actor)) {
+          throw new InvalidActionException("\nYou cannot attack yourself!\n");
         }//if
         return players.get(option).name;
+      } catch (InvalidActionException | IllegalArgumentException e) {
+        System.out.println(e.getMessage());
       } catch(Exception e){
-          System.out.println("\nInvalid input. Try again.");
-          try {Thread.sleep(1500);}catch (Exception ex) {}
-      }//try-catch
+          System.out.println("\nInvalid input. Try again.\n");
+      } finally {
+        try {Thread.sleep(1500);}catch (Exception e) {}
+      }//try-catch-finally
     }//while
   }//getTarget()
   public static void printActionsMenu() {
@@ -57,8 +63,8 @@ public class Main {
     try {
       manager.addCharacter(new Warrior("Greld"));
       manager.addCharacter(new Mage("Kliodas"));
-      manager.addCharacter(new Goblin("Derwel"));
-      manager.addCharacter(new Elf("Milo"));
+//      manager.addCharacter(new Goblin("Derwel"));
+//      manager.addCharacter(new Elf("Milo"));
       
       System.out.println("Battle begins!");
       Thread.sleep(2000);
@@ -69,38 +75,26 @@ public class Main {
           System.out.println("\nIt's " + character.name + "'s turn!\n");
           Thread.sleep(2000);
           String action = getAction(character);
-          String targetName;
-          if (asList(1,3).contains(action))
-            targetName = getTarget(character, manager.charactersInPlay);
-          
-//          String[] parts = input.split(" ");
-//          if (parts.length != 3) {
-//            if (parts.length==2 && parts[1].equals("heal")) {
-//              String actor = parts[0];
-          manager.performAction(character.name, null, action);
+          String targetName = null;
+          if (asList("attack", "special").contains(action))
+            if (!(character instanceof Mage) || action.equals("attack")) targetName = getTarget(character, manager.charactersInPlay);
+          manager.performAction(character.name, targetName, action);
           turnIdx = turnIdx==manager.charactersInPlay.size()-1? 0 : turnIdx+1;
-//            }
-//            else {
-//              throw new IllegalArgumentException("Invalid input format.");
-//            }
-//          }
-//          String actor = parts[0];
-//          String target = parts[1];
-//          String action = parts[2];
-//          manager.performAction(actor, target, action);
-          
         } catch (Exception e) {
           System.out.println(e.getMessage());
         } finally {
           System.out.println();
           Thread.sleep(2000);
-        }
-      }
-      
+        }//try-catch-finally
+      }//while
+      Character winner = manager.charactersInPlay.get(0);
+      System.out.println("\n\n******* " + winner.name + " wins! *******");
+      Thread.sleep(2000);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
     } finally {
       scanner.close();
-      Character winner = manager.charactersInPlay.get(0);
-      System.out.println(winner.name + "wins!");
+      
     }
   }
 }
